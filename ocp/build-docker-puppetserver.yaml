@@ -52,60 +52,60 @@ items:
         startTime: 2018-04-20T12:53:21Z
     startTimestamp: 2018-04-20T12:52:29Z
 # Build: to be checked
-- apiVersion: v1
-  kind: Build
-  metadata:
-    labels:
-      app: build-docker-puppetserver
-      buildconfig: build-docker-puppetserver
-      openshift.io/build-config.name: build-docker-puppetserver
-      openshift.io/build.start-policy: Serial
-    name: build-docker-puppetserver
-    namespace: puppetserver
-    ownerReferences:
-    - apiVersion: build.openshift.io/v1
-      controller: true
-      kind: BuildConfig
-      name: docker-puppetserver
-      uid: 0cc15790-4467-11e8-918e-005056821548
-    resourceVersion: "3824584"
-    selfLink: /oapi/v1/namespaces/puppetserver/builds/docker-puppetserver-48
-    uid: 96e6d7f2-449a-11e8-918e-005056821548
-  spec:
-    nodeSelector: null
-    output:
-      pushSecret:
-        name: builder-dockercfg-zwwwp
-      to:
-        kind: ImageStreamTag
-        name: docker-puppetserver:latest
-    postCommit: {}
-    resources: {}
-    revision:
-      git:
-        author:
-          email: thomas@sector7g.be
-          name: Thomas Meeus
-        commit: 1e6b0fbaa6458055920b17b075be917fce8917cb
-        committer:
-          email: thomas@sector7g.be
-          name: Thomas Meeus
-        message: add only ca
-      type: Git
-    serviceAccount: builder
-    source:
-      git:
-        ref: thomas
-        uri: https://github.com/cegeka/docker-puppetserver.git
-      type: Git
-    strategy:
-      dockerStrategy:
-        from:
-          kind: DockerImage
-          name: registry.redhat.io/rhel7@sha256:fa6d586cc22358400a83927fb38c9d9509962ecc9b2c0dad39ffa46fa71cae68
-      type: Docker
-    triggeredBy:
-    - message: Manually triggered
+#- apiVersion: v1
+#  kind: Build
+#  metadata:
+#    labels:
+#      app: build-docker-puppetserver
+#      buildconfig: build-docker-puppetserver
+#      openshift.io/build-config.name: build-docker-puppetserver
+#      openshift.io/build.start-policy: Serial
+#    name: build-docker-puppetserver
+#    namespace: puppetserver
+#    ownerReferences:
+#    - apiVersion: build.openshift.io/v1
+#      controller: true
+#      kind: BuildConfig
+#      name: docker-puppetserver
+#      uid: 0cc15790-4467-11e8-918e-005056821548
+#    resourceVersion: "3824584"
+#    selfLink: /oapi/v1/namespaces/puppetserver/builds/docker-puppetserver-48
+#    uid: 96e6d7f2-449a-11e8-918e-005056821548
+#  spec:
+#    nodeSelector: null
+#    output:
+#      pushSecret:
+#        name: builder-dockercfg-zwwwp
+#      to:
+#        kind: ImageStreamTag
+#        name: docker-puppetserver:latest
+#    postCommit: {}
+#    resources: {}
+#    revision:
+#      git:
+#        author:
+#          email: thomas@sector7g.be
+#          name: Thomas Meeus
+#        commit: 1e6b0fbaa6458055920b17b075be917fce8917cb
+#        committer:
+#          email: thomas@sector7g.be
+#          name: Thomas Meeus
+#        message: add only ca
+#      type: Git
+#    serviceAccount: builder
+#    source:
+#      git:
+#        ref: thomas
+#        uri: https://github.com/cegeka/docker-puppetserver.git
+#      type: Git
+#    strategy:
+#      dockerStrategy:
+#        from:
+#          kind: DockerImage
+#          name: registry.redhat.io/rhel7@sha256:fa6d586cc22358400a83927fb38c9d9509962ecc9b2c0dad39ffa46fa71cae68
+#      type: Docker
+#    triggeredBy:
+#    - message: Manually triggered
 # ImageStream
 - apiVersion: v1
   kind: ImageStream
@@ -118,180 +118,6 @@ items:
   spec:
     lookupPolicy:
       local: false
-# DeploymentConfig
-- apiVersion: v1
-  kind: DeploymentConfig
-  metadata:
-    labels:
-      app: build-docker-puppetserver
-    name: build-docker-puppetserver
-    namespace: puppetserver
-  spec:
-    replicas: 1
-    selector:
-      app: build-docker-puppetserver
-      deploymentconfig: build-docker-puppetserver
-    strategy:
-      activeDeadlineSeconds: 21600
-      resources: {}
-      rollingParams:
-        intervalSeconds: 1
-        maxSurge: 25%
-        maxUnavailable: 25%
-        timeoutSeconds: 600
-        updatePeriodSeconds: 1
-      type: Rolling
-    template:
-      metadata:
-        labels:
-          app: build-docker-puppetserver
-          deploymentconfig: build-docker-puppetserver
-      spec:
-        containers:
-        - image: docker-registry.default.svc:5000/puppetserver/docker-puppetserver@sha256:5d6407c032a135a65bd0605fa6e9241c26fb6b366c91cae3a7e10b30cc13ee8d
-          imagePullPolicy: Always
-          name: docker-puppetserver
-          ports:
-          - containerPort: 8140
-            protocol: TCP
-          resources: {}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-          - mountPath: /certs
-            name: volume-8g9ee
-            readOnly: true
-        dnsPolicy: ClusterFirst
-        restartPolicy: Always
-        schedulerName: default-scheduler
-        securityContext: {}
-        terminationGracePeriodSeconds: 30
-        volumes:
-        - name: volume-8g9ee
-          secret:
-            defaultMode: 420
-            secretName: puppetmaster-cloud.cegeka.be
-    test: false
-    triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - docker-puppetserver
-        from:
-          kind: ImageStreamTag
-          name: docker-puppetserver:latest
-          namespace: puppetserver
-        lastTriggeredImage: docker-registry.default.svc:5000/puppetserver/docker-puppetserver@sha256:5d6407c032a135a65bd0605fa6e9241c26fb6b366c91cae3a7e10b30cc13ee8d
-      type: ImageChange
-# Route
-- apiVersion: v1
-  kind: Route
-  metadata:
-    name: build-docker-puppetserver
-    namespace: puppetserver
-  spec:
-    host: build-docker-puppetserver.apps.openshift-acc.cegeka.com
-    port:
-      targetPort: 443-8140
-    tls:
-      termination: passthrough
-    to:
-      kind: Service
-      name: build-docker-puppetserver
-      weight: 100
-    wildcardPolicy: None
-# ReplicationController
-- apiVersion: v1
-  kind: ReplicationController
-  metadata:
-    annotations:
-      kubectl.kubernetes.io/original-replicas: "1"
-      openshift.io/deployer-pod.name: build-docker-puppetserver
-      openshift.io/deployment-config.latest-version: "1"
-      openshift.io/deployment-config.name: docker-puppetserver
-      openshift.io/deployment.phase: Complete
-      openshift.io/deployment.replicas: "1"
-      openshift.io/deployment.status-reason: image change
-      openshift.io/encoded-deployment-config: |
-        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"docker-puppetserver","namespace":"puppetserver","selfLink":"/apis/apps.openshift.io/v1/namespaces/puppetserver/deploymentconfigs/docker-puppetserver","uid":"0cc4ef24-4467-11e8-918e-005056821548","resourceVersion":"3791581","generation":3,"creationTimestamp":"2018-04-20T06:50:02Z","labels":{"app":"docker-puppetserver"},"annotations":{"openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"},{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["docker-puppetserver"],"from":{"kind":"ImageStreamTag","namespace":"puppetserver","name":"docker-puppetserver:latest"},"lastTriggeredImage":"docker-registry.default.svc:5000/puppetserver/docker-puppetserver@sha256:93c785c7ac6bd67a2f7d8019b2abd27764adea227dc486ca564bba487b461d19"}}],"replicas":1,"test":false,"selector":{"app":"docker-puppetserver","deploymentconfig":"docker-puppetserver"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"docker-puppetserver","deploymentconfig":"docker-puppetserver"},"annotations":{"openshift.io/generated-by":"OpenShiftNewApp"}},"spec":{"containers":[{"name":"docker-puppetserver","image":"docker-registry.default.svc:5000/puppetserver/docker-puppetserver@sha256:93c785c7ac6bd67a2f7d8019b2abd27764adea227dc486ca564bba487b461d19","ports":[{"containerPort":8140,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":2,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"image change","causes":[{"type":"ImageChange","imageTrigger":{"from":{"kind":"ImageStreamTag","namespace":"puppetserver","name":"docker-puppetserver:latest"}}}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2018-04-20T06:50:02Z","lastTransitionTime":"2018-04-20T06:50:02Z","message":"Deployment config does not have minimum availability."}]}}
-    labels:
-      app: build-docker-puppetserver
-      openshift.io/deployment-config.name: build-docker-puppetserver
-    name: build-docker-puppetserver-1
-    namespace: puppetserver
-    ownerReferences:
-    - apiVersion: apps.openshift.io/v1
-      blockOwnerDeletion: true
-      controller: true
-      kind: DeploymentConfig
-      name: docker-puppetserver
-      uid: 0cc4ef24-4467-11e8-918e-005056821548
-    resourceVersion: "3793375"
-    selfLink: /api/v1/namespaces/puppetserver/replicationcontrollers/docker-puppetserver-1
-    uid: 4fb80f54-4467-11e8-8257-005056aa3d7a
-  spec:
-    replicas: 0
-    selector:
-      app: docker-puppetserver
-      deployment: docker-puppetserver-1
-      deploymentconfig: docker-puppetserver
-    template:
-      metadata:
-        annotations:
-          openshift.io/deployment-config.latest-version: "1"
-          openshift.io/deployment-config.name: docker-puppetserver
-          openshift.io/deployment.name: docker-puppetserver-1
-          openshift.io/generated-by: OpenShiftNewApp
-        creationTimestamp: null
-        labels:
-          app: docker-puppetserver
-          deployment: docker-puppetserver-1
-          deploymentconfig: docker-puppetserver
-      spec:
-        containers:
-        - image: docker-registry.default.svc:5000/puppetserver/docker-puppetserver@sha256:93c785c7ac6bd67a2f7d8019b2abd27764adea227dc486ca564bba487b461d19
-          imagePullPolicy: Always
-          name: docker-puppetserver
-          ports:
-          - containerPort: 8140
-            protocol: TCP
-          resources: {}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-        dnsPolicy: ClusterFirst
-        restartPolicy: Always
-        schedulerName: default-scheduler
-        securityContext: {}
-        terminationGracePeriodSeconds: 30
-  status:
-    observedGeneration: 3
-    replicas: 0
-# Service
-- apiVersion: v1
-  kind: Service
-  metadata:
-    creationTimestamp: 2018-04-20T13:38:06Z
-    labels:
-      app: docker-puppetserver
-    name: docker-puppetserver
-    namespace: puppetserver
-    resourceVersion: "3827785"
-    selfLink: /api/v1/namespaces/puppetserver/services/docker-puppetserver
-    uid: 0e70c955-44a0-11e8-918e-005056821548
-  spec:
-    clusterIP: 172.30.184.217
-    ports:
-    - name: 443-8140
-      port: 443
-      protocol: TCP
-      targetPort: 8140
-    selector:
-      app: docker-puppetserver
-    sessionAffinity: None
-    type: ClusterIP
-  status:
-    loadBalancer: {}
 # Secret
 - apiVersion: v1
   kind: Secret
