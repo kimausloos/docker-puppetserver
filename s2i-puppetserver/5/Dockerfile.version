@@ -42,3 +42,4 @@ chmod 660 /var/log/puppetlabs/puppetserver/masterhttp.log"
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 
 CMD $STI_SCRIPTS_PATH/usage
+LABEL io.openshift.builder-version="35a337c"
