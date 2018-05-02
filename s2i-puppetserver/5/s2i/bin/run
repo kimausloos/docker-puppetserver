@@ -1,2 +1,3 @@
 #!/bin/bash
+echo -e "-> Puppetserver is now ready to run!\n"
 exec /usr/local/bin/start-puppet-server

@@ -7,6 +7,7 @@ MAINTAINER Computing <computing@cegeka.com>
 EXPOSE 8140
 
 ENV PUPPETSERVER_VERSION=5
+VOLUME /etc/puppetlabs/code/environments
 
 LABEL io.k8s.description="Platform for building and running puppet code on Puppetserver 5" \
       io.k8s.display-name="Puppetserver 5" \
@@ -17,12 +18,14 @@ LABEL io.k8s.description="Platform for building and running puppet code on Puppe
       com.redhat.deployments-dir="/etc/puppetlabs/puppetserver" \
       maintainer="Computing <computing@cegeka.com>"
 
-RUN INSTALL_PKGS="puppetserver" && \
-rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet && \
-yum-config-manager --add-repo https://yum.puppetlabs.com/el/7/PC1/x86_64/ && \
-yum -y install $INSTALL_PKGS && \
-yum clean all -y && \
-mkdir -p /opt/s2i/destination
+RUN INSTALL_PKGS="puppetserver" \
+  && rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet \
+  && yum-config-manager --add-repo https://yum.puppetlabs.com/el/7/PC1/x86_64/ \
+  && yum -y install $INSTALL_PKGS \
+  && yum clean all -y \
+  && mkdir -p /opt/s2i/destination \
+  && mv $STI_SCRIPTS_PATH/run $STI_SCRIPTS_PATH/run-base \
+  && mv $STI_SCRIPTS_PATH/assemble $STI_SCRIPTS_PATH/assemble-base \
 
 # Add s2i puppetserver customizations
 ADD ./scripts/puppetserver.sh /usr/local/bin/start-puppet-server
@@ -39,6 +42,6 @@ touch /var/log/puppetlabs/puppetserver/masterhttp.log && \
 chmod 660 /var/log/puppetlabs/puppetserver/masterhttp.log"
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
-COPY ./s2i/bin/ $STI_SCRIPTS_PATH
+COPY ./s2i/bin/* $STI_SCRIPTS_PATH/
 
 CMD $STI_SCRIPTS_PATH/usage
