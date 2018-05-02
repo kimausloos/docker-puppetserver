@@ -28,6 +28,7 @@ RUN INSTALL_PKGS="puppetserver" \
 ADD ./scripts/puppetserver.sh /usr/local/bin/start-puppet-server
 ADD ./conf/ca.cfg /etc/puppetlabs/puppetserver/services.d/ca.cfg
 ADD ./conf/webserver.conf /etc/puppetlabs/puppetserver/conf.d/webserver.conf
+ADD ./conf/puppetserver.conf /etc/puppetlabs/puppetserver/conf.d/puppetserver.conf
 
 RUN FIX_PERMS="chmod +x /usr/local/bin/start-puppet-server && \
 chgrp -R 0 /opt/puppetlabs/ && \
