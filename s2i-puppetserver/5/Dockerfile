@@ -22,10 +22,7 @@ RUN INSTALL_PKGS="puppetserver" \
   && rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet \
   && yum-config-manager --add-repo https://yum.puppetlabs.com/el/7/PC1/x86_64/ \
   && yum -y install $INSTALL_PKGS \
-  && yum clean all -y \
-  && mkdir -p /opt/s2i/destination \
-  && mv $STI_SCRIPTS_PATH/run $STI_SCRIPTS_PATH/run-base \
-  && mv $STI_SCRIPTS_PATH/assemble $STI_SCRIPTS_PATH/assemble-base \
+  && yum clean all -y && rm -rf /var/cache/yum 
 
 # Add s2i puppetserver customizations
 ADD ./scripts/puppetserver.sh /usr/local/bin/start-puppet-server
