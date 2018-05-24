@@ -44,12 +44,15 @@ RUN chmod +x /usr/local/bin/start-puppet-server \
     && chmod 750 /var/log/puppetlabs/puppetserver \
     && echo "cakey = /certs/ca_key.pem" >> /etc/puppetlabs/puppet/puppet.conf \
     && echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
-    && chmod -R g=u /etc/puppetlabs 
+    && chmod -R g=u /etc/puppetlabs
 
 ## Copy over /etc/puppetlabs/code/ for the next builds
 ONBUILD COPY /tmp/src/ /etc/puppetlabs/code/
 
-#USER 1001
+RUN echo "${USER_NAME:-default}:x:$(id -u):0:${USER_NAME:-default} user:${HOME}:/sbin/nologin" >> /etc/passwd
+RUN chmod g=u /etc/passwd
+USER 1001
+
 
 EXPOSE 8140
 
