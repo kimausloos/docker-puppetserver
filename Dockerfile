@@ -21,7 +21,7 @@ COPY ./s2i/bin/ /usr/libexec/s2i
 
 RUN rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet \
     && yum-config-manager --add-repo https://yum.puppetlabs.com/el/7/PC1/x86_64/ \
-    && yum -y install puppetserver mysql-devel ruby-devel \
+    && yum -y install puppetserver mysql-devel ruby-devel openssl-devel \
     && yum clean all -y \
     && mkdir -p /etc/puppetlabs/code \
     && mkdir -p /etc/puppetlabs/code/environments/prd/manifests \
