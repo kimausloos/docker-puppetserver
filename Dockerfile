@@ -21,7 +21,7 @@ COPY ./s2i/bin/ /usr/libexec/s2i
 
 RUN rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet \
     && yum-config-manager --add-repo https://yum.puppetlabs.com/el/7/PC1/x86_64/ \
-    && yum -y install puppetserver \
+    && yum -y install puppetserver mysql-devel ruby-devel \
     && yum clean all -y \
     && mkdir -p /etc/puppetlabs/code \
     && mkdir -p /etc/puppetlabs/code/environments/prd/manifests \
@@ -33,6 +33,7 @@ COPY ./s2i/config/ca.cfg /etc/puppetlabs/puppetserver/services.d/ca.cfg
 COPY ./s2i/config/webserver.conf /etc/puppetlabs/puppetserver/conf.d/webserver.conf
 COPY ./s2i/config/hiera.yaml /etc/puppetlabs/code/environments/prd/hiera.yaml
 COPY ./s2i/config/site.pp /etc/puppetlabs/code/environments/prd/manifests/site.pp
+COPY ./s2i/registration/check_registration.rb /usr/local/scripts
 
 ## Set correct permissions
 RUN chmod +x /usr/local/bin/start-puppet-server \
@@ -43,13 +44,17 @@ RUN chmod +x /usr/local/bin/start-puppet-server \
     && chmod -R 775 /etc/puppetlabs/code \
     && chgrp -R 0 /var/log/puppetlabs \
     && chmod 750 /var/log/puppetlabs/puppetserver \
-    && echo "cakey = /certs/ca_key.pem" >> /etc/puppetlabs/puppet/puppet.conf \
-    && echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
     && chmod -R g=u /etc/puppetlabs \
     && chmod 660 /var/log/puppetlabs/puppetserver/masterhttp.log \
-    && touch /etc/puppetlabs/puppet/ssl/ca/ca_crl.pem \
-    && touch /etc/puppetlabs/puppet/ssl/ca/serial \
-    && touch /etc/puppetlabs/puppet/ssl/ca/inventory.txt
+
+#SSL config requirements
+RUN && echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
+    && echo "autosign = /usr/local/scripts/check_registration.rb" >> /etc/puppetlabs/puppet/puppet.conf \
+    && chown puppet:puppet /usr/local/scripts/check_registration.rb \
+    && echo 0 >  /etc/puppetlabs/puppet/ssl/ca/serial \
+    && touch /etc/puppetlabs/puppet/ssl/ca/inventory.tx \
+    && echo 1000 > /etc/puppetlabs/puppet/ssl/ca/crlnumber \
+    && echo > index.txt
 
 
 ## Copy over /etc/puppetlabs/code/ for the next builds
