@@ -56,11 +56,11 @@ RUN echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
     && touch /etc/puppetlabs/puppet/ssl/ca/inventory.txt \
     && echo 1000 > /etc/puppetlabs/puppet/ssl/ca/crlnumber \
     && echo > /etc/puppetlabs/puppet/ssl/ca/index.txt \
-    && echo $CAKEY > /etc/puppetlabs/puppet/ssl/ca/ca_key.pem
+    && openssl ca -config /certs/openssl_ca.cnf -gencrl -out /etc/puppetlabs/puppet/ssl/ca/ca_crl.pem
 
 
 ## Copy over /etc/puppetlabs/code/ for the next builds
-ONBUILD COPY /tmp/src/ /etc/puppetlabs/code/
+#ONBUILD COPY /tmp/src/ /etc/puppetlabs/code/
 
 RUN echo "${USER_NAME:-default}:x:$(id -u):0:${USER_NAME:-default} user:${HOME}:/sbin/nologin" >> /etc/passwd
 RUN chmod g=u /etc/passwd

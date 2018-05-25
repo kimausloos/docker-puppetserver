@@ -2,4 +2,5 @@
 #
 # S2I run script for the 'puppetserver' image.
 
+exec echo $CAKEY > /etc/puppetlabs/puppet/ssl/ca/ca_key.pem
 exec /usr/local/bin/start-puppet-server
