@@ -48,11 +48,11 @@ RUN chmod +x /usr/local/bin/start-puppet-server \
     && chmod 660 /var/log/puppetlabs/puppetserver/masterhttp.log
 
 #SSL config requirements
-RUN && echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
+RUN echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
     && echo "autosign = /usr/local/scripts/check_registration.rb" >> /etc/puppetlabs/puppet/puppet.conf \
     && chown puppet:puppet /usr/local/scripts/check_registration.rb \
     && echo 0 >  /etc/puppetlabs/puppet/ssl/ca/serial \
-    && touch /etc/puppetlabs/puppet/ssl/ca/inventory.tx \
+    && touch /etc/puppetlabs/puppet/ssl/ca/inventory.txt \
     && echo 1000 > /etc/puppetlabs/puppet/ssl/ca/crlnumber \
     && echo > /etc/puppetlabs/puppet/ssl/ca/index.txt \
     && echo $CAKEY > /etc/puppetlabs/puppet/ssl/ca/ca_key.pem
