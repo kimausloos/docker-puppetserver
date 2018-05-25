@@ -25,7 +25,8 @@ RUN rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet \
     && yum clean all -y \
     && mkdir -p /etc/puppetlabs/code \
     && mkdir -p /etc/puppetlabs/code/environments/prd/manifests \
-    && touch /var/log/puppetlabs/puppetserver/masterhttp.log
+    && touch /var/log/puppetlabs/puppetserver/masterhttp.log \
+    && mkdir /usr/local/scripts
 
 ## Copy all required config files
 COPY ./s2i/config/puppetserver.sh /usr/local/bin/start-puppet-server
