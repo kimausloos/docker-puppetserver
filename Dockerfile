@@ -45,7 +45,7 @@ RUN chmod +x /usr/local/bin/start-puppet-server \
     && chgrp -R 0 /var/log/puppetlabs \
     && chmod 750 /var/log/puppetlabs/puppetserver \
     && chmod -R g=u /etc/puppetlabs \
-    && chmod 660 /var/log/puppetlabs/puppetserver/masterhttp.log \
+    && chmod 660 /var/log/puppetlabs/puppetserver/masterhttp.log
 
 #SSL config requirements
 RUN && echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
@@ -54,7 +54,8 @@ RUN && echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
     && echo 0 >  /etc/puppetlabs/puppet/ssl/ca/serial \
     && touch /etc/puppetlabs/puppet/ssl/ca/inventory.tx \
     && echo 1000 > /etc/puppetlabs/puppet/ssl/ca/crlnumber \
-    && echo > index.txt
+    && echo > /etc/puppetlabs/puppet/ssl/ca/index.txt \
+    && echo $CAKEY > /etc/puppetlabs/puppet/ssl/ca/ca_key.pem
 
 
 ## Copy over /etc/puppetlabs/code/ for the next builds
