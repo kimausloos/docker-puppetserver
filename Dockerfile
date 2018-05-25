@@ -39,13 +39,18 @@ RUN chmod +x /usr/local/bin/start-puppet-server \
     && chgrp -R 0 /opt/puppetlabs \
     && chgrp -R 0 /etc/puppetlabs \
     && chmod -R 771 /etc/puppetlabs/puppet/ssl \
+    && mkdir /etc/puppetlabs/puppet/ssl/ca \
     && chmod -R 775 /etc/puppetlabs/code \
     && chgrp -R 0 /var/log/puppetlabs \
     && chmod 750 /var/log/puppetlabs/puppetserver \
     && echo "cakey = /certs/ca_key.pem" >> /etc/puppetlabs/puppet/puppet.conf \
     && echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
     && chmod -R g=u /etc/puppetlabs \
-    && chmod 660 /var/log/puppetlabs/puppetserver/masterhttp.log
+    && chmod 660 /var/log/puppetlabs/puppetserver/masterhttp.log \
+    && touch /etc/puppetlabs/puppet/ssl/ca/ca_crl.pem \
+    && touch /etc/puppetlabs/puppet/ssl/ca/serial \
+    && touch /etc/puppetlabs/puppet/ssl/ca/inventory.txt
+
 
 ## Copy over /etc/puppetlabs/code/ for the next builds
 ONBUILD COPY /tmp/src/ /etc/puppetlabs/code/
