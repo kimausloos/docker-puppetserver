@@ -56,7 +56,6 @@ RUN echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
     && touch /etc/puppetlabs/puppet/ssl/ca/inventory.txt \
     && echo 1000 > /etc/puppetlabs/puppet/ssl/ca/crlnumber \
     && echo > /etc/puppetlabs/puppet/ssl/ca/index.txt \
-    && openssl ca -config /certs/openssl_ca.cnf -gencrl -out /etc/puppetlabs/puppet/ssl/ca/ca_crl.pem
 
 
 ## Copy over /etc/puppetlabs/code/ for the next builds
