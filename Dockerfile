@@ -47,8 +47,9 @@ RUN chmod +x /usr/local/bin/start-puppet-server \
     && chmod 750 /var/log/puppetlabs/puppetserver \
     && chmod -R g=u /etc/puppetlabs \
     && chmod 660 /var/log/puppetlabs/puppetserver/masterhttp.log \
-    && touch /root/.rnd \
-    && chmod -R 0 /root/.rnd
+    && mkdir /openssl \
+    && touch /openssl/.rnd \
+    && chmod -R 0 /openssl/.rnd
 
 #SSL config requirements
 RUN echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
