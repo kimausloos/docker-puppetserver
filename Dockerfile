@@ -72,6 +72,7 @@ RUN echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
     && echo 1000 > /etc/puppetlabs/puppet/ssl/ca/crlnumber \
     && echo > /etc/puppetlabs/puppet/ssl/ca/index.txt
 
+RUN find /etc/puppetlabs -type d -exec chmod g+x {} +
 RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > /etc/passwd.template
 
 ## Copy over /etc/puppetlabs/code/ for the next builds
