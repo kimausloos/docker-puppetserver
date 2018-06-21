@@ -1,6 +1,5 @@
 # Puppetserver docker file
-#FROM registry.redhat.io/rhel7:latest
-FROM centos:7
+FROM registry.redhat.io/rhel7:latest
 
 LABEL maintainer="Thomas Meeus <thomas.meeus@cegeka.com>"
 
@@ -24,7 +23,7 @@ ENV USER_NAME=puppet \
     USER_UID=200
 
 RUN useradd -l -u ${USER_UID} -r -g 0 -m -d ${HOME_DIR} -s /sbin/no-login -c "${USER_NAME} application user" ${USER_NAME} \
-            && chmod -R g+rw ${HOME_DIR} /etc/passwd && \
+            && chmod -R g+rw ${HOME_DIR} /etc/passwd \
             && chmod ug+x /uid_entrypoint
 
 RUN rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet \
