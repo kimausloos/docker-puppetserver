@@ -66,4 +66,4 @@ USER 1001
 
 EXPOSE 8140
 
-CMD ["/usr/libexec/s2i/usage"]
+CMD ["/usr/libexec/s2i/run"]

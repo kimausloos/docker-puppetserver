@@ -30,8 +30,8 @@ items:
     kind: ImageStream
     metadata:
       labels:
-        app: build-puppetserverca-code
-      name: puppetserverca-code
+        app: build-puppetserverca
+      name: puppetserverca
 ## BUILDCONFIG ##
   - apiVersion: v1
     kind: BuildConfig
@@ -55,56 +55,28 @@ items:
             kind: ImageStreamTag
             name: 'rhel7:latest'
         type: Docker
-## BUILDCONFIG code ##
-  - apiVersion: v1
-    kind: BuildConfig
-    metadata:
-      labels:
-        app: build-puppetserverca-code
-      name: build-puppetserverca-code
-    spec:
-      output:
-        to:
-          kind: ImageStreamTag
-          name: 'puppetserverca-code:latest'
-      source:
-        git:
-          uri: 'git@github.com:cegeka/puppet-monorepo.git'
-          ref: 'puppet5'
-        sourceSecret:
-          name: github-deploykey
-        type: Git
-      strategy:
-        sourceStrategy:
-          from:
-            kind: ImageStreamTag
-            name: 'puppetserverca:latest'
-        type: Source
-      triggers:
-        - imageChange:
-          type: ImageChange
 ## DEPLOYMENTCONFIG ##
   - apiVersion: v1
     kind: DeploymentConfig
     metadata:
       labels:
-        app: puppetserverca-code
-      name: puppetserverca-code
+        app: puppetserverca
+      name: puppetserverca
     spec:
       replicas: 1
       selector:
-        app: puppetserverca-code
-        deploymentconfig: puppetserverca-code
+        app: puppetserverca
+        deploymentconfig: puppetserverca
       template:
         metadata:
           labels:
-            app: puppetserverca-code
-            deploymentconfig: puppetserverca-code
+            app: puppetserverca
+            deploymentconfig: puppetserverca
         spec:
           containers:
             - imagePullPolicy: Always
-              image: 'puppetserverca-code:latest'
-              name: puppetserverca-code
+              image: 'puppetserverca:latest'
+              name: puppetserverca
               ports:
                 - containerPort: 8140
                   protocol: TCP
@@ -133,16 +105,16 @@ items:
             - name: cert-volume
               secret:
                 defaultMode: 420
-                secretName: puppetca-certificates
+                secretName: puppetmaster-certificates
       triggers:
         - type: ConfigChange
         - imageChangeParams:
             automatic: true
             containerNames:
-              - puppetserverca-code
+              - puppetserverca
             from:
               kind: ImageStreamTag
-              name: 'puppetserverca-code:latest'
+              name: 'puppetserverca:latest'
           type: ImageChange
 
 ## SERVICE ##
