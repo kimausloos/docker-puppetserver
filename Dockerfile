@@ -33,7 +33,7 @@ RUN rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet \
     && find ${HOME_DIR} -type d -exec chmod g+x {} + \
     && touch /var/log/puppetlabs/puppetserver/masterhttp.log \
     && mkdir /usr/local/scripts \
-    && mkdir /config \
+    && mkdir /config
 
 
 
