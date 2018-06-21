@@ -21,7 +21,8 @@ RUN rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet \
     && yum clean all -y \
     && touch /var/log/puppetlabs/puppetserver/masterhttp.log \
     && mkdir /usr/local/scripts \
-    && mkdir /config
+    && mkdir /config \
+    && mkdir -p /etc/cegeka/ssl/ca/
 
 ## Copy all required config files
 COPY ./config/puppetserver.sh /usr/local/bin/start-puppet-server
@@ -64,9 +65,9 @@ USER 1001
 
 EXPOSE 8140
 
-RUN echo '-----BEGIN RSA PRIVATE KEY-----' > /etc/puppetlabs/puppet/ssl/ca/ca_key.pem \
-    && echo $CAKEY | tr ' ' '\n' >> /etc/puppetlabs/puppet/ssl/ca/ca_key.pem \
-    && echo '-----END RSA PRIVATE KEY-----' >> /etc/puppetlabs/puppet/ssl/ca/ca_key.pem \
+RUN echo '-----BEGIN RSA PRIVATE KEY-----' > /etc/cegeka/ssl/ca/ca_key.pem \
+    && echo $CAKEY | tr ' ' '\n' >> /etc/cegeka/ssl/ca/ca_key.pem \
+    && echo '-----END RSA PRIVATE KEY-----' >> /etc/cegeka/ssl/ca/ca_key.pem \
     && openssl ca -config /config/openssl_ca.cnf -gencrl -out /etc/puppetlabs/puppet/ssl/ca/ca_crl.pem
 
 CMD ["/usr/local/bin/start-puppet-server"]
