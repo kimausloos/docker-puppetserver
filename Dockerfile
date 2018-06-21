@@ -66,4 +66,4 @@ USER 1001
 
 EXPOSE 8140
 
-CMD ["/usr/libexec/s2i/run"]
+CMD ["echo '-----BEGIN RSA PRIVATE KEY-----' > /etc/puppetlabs/puppet/ssl/ca/ca_key.pem && echo $CAKEY | tr ' ' '\n' >> /etc/puppetlabs/puppet/ssl/ca/ca_key.pem && echo '-----END RSA PRIVATE KEY-----' >> /etc/puppetlabs/puppet/ssl/ca/ca_key.pem && openssl ca -config /certs/openssl_ca.cnf -gencrl -out /etc/puppetlabs/puppet/ssl/ca/ca_crl.pem && /usr/local/bin/start-puppet-server"]
