@@ -46,8 +46,8 @@ items:
           name: 'puppetserverca:latest'
       source:
         git:
-          ref: andrei_ca
-          uri: 'https://github.com/andrei-asan/docker-puppetserver.git'
+          ref: puppetca
+          uri: 'https://github.com/cegeka/docker-puppetserver.git'
         type: Git
       strategy:
         dockerStrategy:
