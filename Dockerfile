@@ -61,16 +61,17 @@ RUN echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
 ## Copy over /etc/puppetlabs/code/ for the next builds
 #ONBUILD COPY /tmp/src/ /etc/puppetlabs/code/
 
-RUN echo "${USER_NAME:-default}:x:$(id -u):0:${USER_NAME:-default} user:${HOME}:/sbin/nologin" >> /etc/passwd
-RUN chmod g=u /etc/passwd
-USER 1001
 
-
-EXPOSE 8140
 
 RUN echo '-----BEGIN RSA PRIVATE KEY-----' > /etc/cegeka/ssl/ca/ca_key.pem \
     && echo $CAKEY | tr ' ' '\n' >> /etc/cegeka/ssl/ca/ca_key.pem \
     && echo '-----END RSA PRIVATE KEY-----' >> /etc/cegeka/ssl/ca/ca_key.pem \
     && openssl ca -config /config/openssl_ca.cnf -gencrl -out /etc/puppetlabs/puppet/ssl/ca/ca_crl.pem
+
+RUN echo "${USER_NAME:-default}:x:$(id -u):0:${USER_NAME:-default} user:${HOME}:/sbin/nologin" >> /etc/passwd
+RUN chmod g=u /etc/passwd
+USER 1001
+
+EXPOSE 8140
 
 CMD ["/usr/local/bin/start-puppet-server"]
