@@ -19,7 +19,7 @@ COPY ./config/uid_entrypoint /
 
 ## Install Puppetserver & create Puppet code directory
 
-RUN ENV USER_NAME=puppet \
+ENV USER_NAME=puppet \
     HOME_DIR=/var/lib/puppet \
     USER_UID=200
 
