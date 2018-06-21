@@ -13,10 +13,6 @@ LABEL io.k8s.description="Platform for building Puppet Server images" \
       io.openshift.tags="openshift,docker,puppet,puppetserver,image,builder"
 
 
-## Add the s2i scripts.
-LABEL io.openshift.s2i.scripts-url=image:///usr/libexec/s2i
-COPY ./s2i/bin/ /usr/libexec/s2i
-
 ## Install Puppetserver & create Puppet code directory
 
 RUN rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet \
@@ -27,10 +23,10 @@ RUN rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet \
     && mkdir /usr/local/scripts
 
 ## Copy all required config files
-COPY ./s2i/config/puppetserver.sh /usr/local/bin/start-puppet-server
-COPY ./s2i/config/ca.cfg /etc/puppetlabs/puppetserver/services.d/ca.cfg
-COPY ./s2i/config/webserver.conf /etc/puppetlabs/puppetserver/conf.d/webserver.conf
-COPY ./s2i/registration/check_registration.rb /usr/local/scripts
+COPY ./config/puppetserver.sh /usr/local/bin/start-puppet-server
+COPY ./config/ca.cfg /etc/puppetlabs/puppetserver/services.d/ca.cfg
+COPY ./config/webserver.conf /etc/puppetlabs/puppetserver/conf.d/webserver.conf
+COPY ./config/check_registration.rb /usr/local/scripts
 
 ## Set correct permissions
 RUN chmod +x /usr/local/bin/start-puppet-server \
