@@ -48,7 +48,7 @@ COPY ./config/check_registration.rb /usr/local/scripts
 COPY ./config/openssl_ca.cnf /config
 
 ## Set correct permissions
-RUN chmod +x /usr/local/bin/start-puppet-server \
+RUN chmod +x /usr/local/bin/start-puppet-server
 #    && chgrp -R 0 /opt/puppetlabs \
 #    && chgrp -R 0 /etc/puppetlabs \
 #    && chmod -R 771 /etc/puppetlabs/puppet/ssl \
