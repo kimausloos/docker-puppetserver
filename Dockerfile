@@ -20,13 +20,15 @@ RUN rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet \
     && yum -y install puppetserver mysql-devel ruby-devel openssl openssl-devel \
     && yum clean all -y \
     && touch /var/log/puppetlabs/puppetserver/masterhttp.log \
-    && mkdir /usr/local/scripts
+    && mkdir /usr/local/scripts \
+    && mkdir /config
 
 ## Copy all required config files
 COPY ./config/puppetserver.sh /usr/local/bin/start-puppet-server
 COPY ./config/ca.cfg /etc/puppetlabs/puppetserver/services.d/ca.cfg
 COPY ./config/webserver.conf /etc/puppetlabs/puppetserver/conf.d/webserver.conf
 COPY ./config/check_registration.rb /usr/local/scripts
+COPY ./config/openssl_ca.cnf /config
 
 ## Set correct permissions
 RUN chmod +x /usr/local/bin/start-puppet-server \
@@ -65,6 +67,6 @@ EXPOSE 8140
 RUN echo '-----BEGIN RSA PRIVATE KEY-----' > /etc/puppetlabs/puppet/ssl/ca/ca_key.pem \
     && echo $CAKEY | tr ' ' '\n' >> /etc/puppetlabs/puppet/ssl/ca/ca_key.pem \
     && echo '-----END RSA PRIVATE KEY-----' >> /etc/puppetlabs/puppet/ssl/ca/ca_key.pem \
-    && openssl ca -config /certs/openssl_ca.cnf -gencrl -out /etc/puppetlabs/puppet/ssl/ca/ca_crl.pem
+    && openssl ca -config /config/openssl_ca.cnf -gencrl -out /etc/puppetlabs/puppet/ssl/ca/ca_crl.pem
 
 CMD ["/usr/local/bin/start-puppet-server"]
