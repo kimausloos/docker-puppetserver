@@ -14,16 +14,32 @@ LABEL io.k8s.description="Platform for building Puppet Server images" \
       io.openshift.tags="openshift,docker,puppet,puppetserver,image,builder"
 
 
+COPY ./config/uid_entrypoint /
+
+
 ## Install Puppetserver & create Puppet code directory
+
+RUN ENV USER_NAME=puppet \
+    HOME_DIR=/var/lib/puppet \
+    USER_UID=200
+
+RUN useradd -l -u ${USER_UID} -r -g 0 -m -d ${HOME_DIR} -s /sbin/no-login -c "${USER_NAME} application user" ${USER_NAME} \
+            && chmod -R g+rw ${HOME_DIR} /etc/passwd && \
+            && chmod ug+x /uid_entrypoint
 
 RUN rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet \
     && yum-config-manager --add-repo https://yum.puppetlabs.com/el/7/PC1/x86_64/ \
     && yum -y install puppetserver mysql-devel ruby-devel \
     && yum clean all -y \
+    && find ${HOME_DIR} -type d -exec chmod g+x {} + \
     && touch /var/log/puppetlabs/puppetserver/masterhttp.log \
     && mkdir /usr/local/scripts \
     && mkdir /config \
-    && mkdir -p /etc/cegeka/ssl/ca/
+
+
+
+VOLUME /etc/cegeka/ssl/ca/
+
 
 ## Copy all required config files
 COPY ./config/puppetserver.sh /usr/local/bin/start-puppet-server
@@ -57,11 +73,14 @@ RUN echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
     && echo 1000 > /etc/puppetlabs/puppet/ssl/ca/crlnumber \
     && echo > /etc/puppetlabs/puppet/ssl/ca/index.txt
 
+RUN sed "s@${USER_NAME}:x:${USER_UID}:@${USER_NAME}:x:\${USER_ID}:@g" /etc/passwd > /etc/passwd.template
 
 ## Copy over /etc/puppetlabs/code/ for the next builds
 #ONBUILD COPY /tmp/src/ /etc/puppetlabs/code/
+USER 200
 
 
 EXPOSE 8140
+ENTRYPOINT [ "/uid_entrypoint" ]
 
 CMD ["/sbin/init"]
