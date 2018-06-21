@@ -43,7 +43,10 @@ RUN chmod +x /usr/local/bin/start-puppet-server \
     && chmod 660 /var/log/puppetlabs/puppetserver/masterhttp.log \
     && touch /tmp/.rnd \
     && chgrp -R 0 /tmp/.rnd \
-    && chmod 777 /tmp/.rnd
+    && chmod 777 /tmp/.rnd \
+    && chgrp -R 0 /etc/cegeka/ssl/ca/ \
+    && chmod 777 /etc/cegeka/ssl/ca/
+
 
 #SSL config requirements
 RUN echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
