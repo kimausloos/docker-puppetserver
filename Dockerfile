@@ -1,5 +1,6 @@
 # Puppetserver docker file
-FROM registry.redhat.io/rhel7:latest
+#FROM registry.redhat.io/rhel7:latest
+FROM centos:7
 
 LABEL maintainer="Thomas Meeus <thomas.meeus@cegeka.com>"
 
@@ -17,7 +18,7 @@ LABEL io.k8s.description="Platform for building Puppet Server images" \
 
 RUN rpm --import https://yum.puppetlabs.com/RPM-GPG-KEY-puppet \
     && yum-config-manager --add-repo https://yum.puppetlabs.com/el/7/PC1/x86_64/ \
-    && yum -y install puppetserver mysql-devel ruby-devel openssl openssl-devel \
+    && yum -y install puppetserver mysql-devel ruby-devel \
     && yum clean all -y \
     && touch /var/log/puppetlabs/puppetserver/masterhttp.log \
     && mkdir /usr/local/scripts \
@@ -41,9 +42,6 @@ RUN chmod +x /usr/local/bin/start-puppet-server \
     && chmod 750 /var/log/puppetlabs/puppetserver \
     && chmod -R g=u /etc/puppetlabs \
     && chmod 660 /var/log/puppetlabs/puppetserver/masterhttp.log \
-    && touch /tmp/.rnd \
-    && chgrp -R 0 /tmp/.rnd \
-    && chmod 777 /tmp/.rnd \
     && chgrp -R 0 /etc/cegeka/ssl/ca/ \
     && chmod 777 /etc/cegeka/ssl/ca/
 
@@ -62,16 +60,6 @@ RUN echo "cacert = /certs/ca_crt.pem" >> /etc/puppetlabs/puppet/puppet.conf \
 #ONBUILD COPY /tmp/src/ /etc/puppetlabs/code/
 
 
-
-RUN echo '-----BEGIN RSA PRIVATE KEY-----' > /etc/cegeka/ssl/ca/ca_key.pem \
-    && echo $CAKEY | tr ' ' '\n' >> /etc/cegeka/ssl/ca/ca_key.pem \
-    && echo '-----END RSA PRIVATE KEY-----' >> /etc/cegeka/ssl/ca/ca_key.pem \
-    && openssl ca -config /config/openssl_ca.cnf -gencrl -out /etc/puppetlabs/puppet/ssl/ca/ca_crl.pem
-
-RUN echo "${USER_NAME:-default}:x:$(id -u):0:${USER_NAME:-default} user:${HOME}:/sbin/nologin" >> /etc/passwd
-RUN chmod g=u /etc/passwd
-USER 1001
-
 EXPOSE 8140
 
-CMD ["/usr/local/bin/start-puppet-server"]
+CMD ["/sbin/init"]
