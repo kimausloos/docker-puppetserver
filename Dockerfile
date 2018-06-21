@@ -51,10 +51,10 @@ COPY ./config/openssl_ca.cnf /config
 RUN chmod +x /usr/local/bin/start-puppet-server \
 #    && chgrp -R 0 /opt/puppetlabs \
 #    && chgrp -R 0 /etc/puppetlabs \
-#    && chmod -R 771 /etc/puppetlabs/puppet/ssl \
-    && mkdir /etc/puppetlabs/puppet/ssl/ca
+    && chmod -R 771 /etc/puppetlabs/puppet/ssl \
+    && mkdir /etc/puppetlabs/puppet/ssl/ca \
 #    && chgrp -R 0 /var/log/puppetlabs \
-#    && chmod 750 /var/log/puppetlabs/puppetserver \
+    && chmod 750 /var/log/puppetlabs/puppetserver \
 #    && chmod -R g=u /etc/puppetlabs \
 #    && chmod 660 /var/log/puppetlabs/puppetserver/masterhttp.log \
 #    && chgrp -R 0 /etc/cegeka/ssl/ca/ \
