@@ -45,7 +45,7 @@ RUN chmod +x /usr/local/bin/start-puppet-server \
     && chgrp -R 0 /etc/cegeka/ssl/ca/ \
     && chmod 777 /etc/cegeka/ssl/ca/ \
     && mkdir -p /var/run/puppetlabs/puppetserver \
-    && chgrp -R 0 /var/run/puppetlabs/puppetserver \
+    && chgrp -R 0 /var/run/puppetlabs/puppetserver
 
 
 #SSL config requirements
