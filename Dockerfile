@@ -65,6 +65,8 @@ RUN chmod +x /usr/local/bin/start-puppet-server \
 
 #SSL config requirements
 RUN echo "cacert = /ca/cacert" >> /etc/puppetlabs/puppet/puppet.conf \
+    && echo "cakey = /ca/cakey" >> /etc/puppetlabs/puppet/puppet.conf \
+    && echo "cacert = /ca/cacert" >> /etc/puppetlabs/puppet/puppet.conf \
     && echo "autosign = /usr/local/scripts/check_registration.rb" >> /etc/puppetlabs/puppet/puppet.conf \
     && chown puppet:puppet /usr/local/scripts/check_registration.rb \
     && echo 0 >  /etc/puppetlabs/puppet/ssl/ca/serial \
